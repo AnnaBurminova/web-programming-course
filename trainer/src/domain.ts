@@ -41,6 +41,12 @@ export type ShortTextAnswer = {
 };
 
 export type Answer = SingleChoiceAnswer | ShortTextAnswer;
+
+export type Progress = {
+    answered: number;
+    total: number;
+};
+
 export function findTask(
     trainingSet: TrainingSet,
     taskId: string
@@ -58,18 +64,25 @@ export function filterTasksByTopic(
 export function calculateProgress(
     trainingSet: TrainingSet,
     answers: Answer[]
-): number {
-    if (trainingSet.tasks.length === 0) {
-        return 0;
-    }
-
+): Progress {
     const answeredTaskIds = new Set(
-        answers.map((answer) => answer.taskId)
+        answers
+            .filter((answer) => {
+                if (answer.kind === "short-text") {
+                    return answer.text.trim().length > 0;
+                }
+
+                return true;
+            })
+            .map((answer) => answer.taskId)
     );
 
-    const answeredTasksCount = trainingSet.tasks.filter(
+    const answered = trainingSet.tasks.filter(
         (task) => answeredTaskIds.has(task.id)
     ).length;
 
-    return answeredTasksCount / trainingSet.tasks.length;
+    return {
+        answered,
+        total: trainingSet.tasks.length,
+    };
 }

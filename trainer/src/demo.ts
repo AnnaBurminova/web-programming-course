@@ -7,58 +7,119 @@ import {
 } from "./domain";
 
 const trainingSet: TrainingSet = {
-    id: "typescript-basics",
-    title: "Основы TypeScript",
+    id: "web-basics",
+    title: "Основы веб-программирования",
     tasks: [
         {
-            id: "task-1",
+            id: "ts-1",
             kind: "single-choice",
-            topic: "types",
-            prompt: "Какой тип используется для строк?",
+            topic: "typescript",
+            prompt: "Что выведет этот JavaScript-код?",
+            code: 'console.log("10" * 5);',
             options: [
-                {
-                    id: "option-1",
-                    label: "string",
-                },
-                {
-                    id: "option-2",
-                    label: "number",
-                },
+                { id: "a", label: "105" },
+                { id: "b", label: "50" },
+                { id: "c", label: "Ошибка" },
             ],
         },
         {
-            id: "task-2",
+            id: "react-1",
             kind: "short-text",
-            topic: "types",
-            prompt: "Что такое TypeScript?",
-        },
-        {
-            id: "task-3",
-            kind: "short-text",
-            topic: "functions",
-            prompt: "Что возвращает функция?",
+            topic: "react",
+            prompt: "Объясните, чем props компонента отличаются от его состояния.",
         },
     ],
 };
 
+const secondTrainingSet: TrainingSet = {
+    id: "second-set",
+    title: "Дополнительный набор",
+    tasks: [
+        {
+            id: "second-1",
+            kind: "short-text",
+            topic: "html",
+            prompt: "Что такое HTML?",
+        },
+    ],
+};
+
+const emptyTrainingSet: TrainingSet = {
+    id: "empty-set",
+    title: "Пустой набор",
+    tasks: [],
+};
+
 const answers: Answer[] = [
     {
-        taskId: "task-1",
+        taskId: "ts-1",
         kind: "single-choice",
-        optionId: "option-1",
+        optionId: "b",
     },
     {
-        taskId: "task-2",
+        taskId: "react-1",
         kind: "short-text",
-        text: "TypeScript — язык с поддержкой статической типизации.",
+        text: "Props передаются компоненту, а состояние хранится внутри компонента.",
     },
 ];
 
-console.log("Найденное задание:");
-console.log(findTask(trainingSet, "task-1"));
+const oneAnswer: Answer[] = [
+    {
+        taskId: "ts-1",
+        kind: "single-choice",
+        optionId: "b",
+    },
+];
 
-console.log("Задания по теме types:");
-console.log(filterTasksByTopic(trainingSet, "types"));
+const answersWithUnknownTask: Answer[] = [
+    ...oneAnswer,
+    {
+        taskId: "unknown-task",
+        kind: "short-text",
+        text: "Ответ",
+    },
+];
 
-console.log("Прогресс:");
+const answersWithBlankText: Answer[] = [
+    {
+        taskId: "react-1",
+        kind: "short-text",
+        text: "   ",
+    },
+];
+
+console.log("Существующее задание:");
+console.log(findTask(trainingSet, "ts-1"));
+
+console.log("Несуществующее задание:");
+console.log(findTask(trainingSet, "unknown-task"));
+
+console.log("Фильтр по теме typescript:");
+console.log(filterTasksByTopic(trainingSet, "typescript"));
+
+console.log("Фильтр по отсутствующей теме:");
+console.log(filterTasksByTopic(trainingSet, "unknown"));
+
+console.log("Задания второго набора:");
+console.log(filterTasksByTopic(secondTrainingSet, "html"));
+
+console.log("Прогресс с одним ответом:");
+console.log(calculateProgress(trainingSet, oneAnswer));
+
+console.log("Прогресс со всеми ответами:");
 console.log(calculateProgress(trainingSet, answers));
+
+console.log("Прогресс с чужим taskId:");
+console.log(calculateProgress(trainingSet, answersWithUnknownTask));
+
+console.log("Прогресс с пустым short-text:");
+console.log(calculateProgress(trainingSet, answersWithBlankText));
+
+console.log("Прогресс пустого набора:");
+console.log(calculateProgress(emptyTrainingSet, []));
+
+console.log("Исходный набор после вызовов:");
+console.log(trainingSet);
+
+console.log("Исходные ответы после вызовов:");
+console.log(answers);
