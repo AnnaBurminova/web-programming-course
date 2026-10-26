@@ -47,6 +47,16 @@ export type Progress = {
     total: number;
 };
 
+export function isAnswered(task: Task, answer: Answer | undefined): boolean {
+    if (!answer || answer.taskId !== task.id || answer.kind !== task.kind) {
+        return false;
+    }
+
+    return answer.kind === "short-text"
+        ? answer.text.trim().length > 0
+        : answer.optionId.length > 0;
+}
+
 export function findTask(
     trainingSet: TrainingSet,
     taskId: string
@@ -65,20 +75,8 @@ export function calculateProgress(
     trainingSet: TrainingSet,
     answers: Answer[]
 ): Progress {
-    const answeredTaskIds = new Set(
-        answers
-            .filter((answer) => {
-                if (answer.kind === "short-text") {
-                    return answer.text.trim().length > 0;
-                }
-
-                return true;
-            })
-            .map((answer) => answer.taskId)
-    );
-
     const answered = trainingSet.tasks.filter(
-        (task) => answeredTaskIds.has(task.id)
+        (task) => isAnswered(task, answers.find((answer) => answer.taskId === task.id))
     ).length;
 
     return {

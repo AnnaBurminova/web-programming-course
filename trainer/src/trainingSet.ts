@@ -17,10 +17,27 @@ export const trainingSet: TrainingSet = {
       ],
     },
     {
+      id: "ts-2",
+      kind: "single-choice",
+      topic: "typescript",
+      prompt: "Что возвращает find, если элемент не найден?",
+      options: [
+        { id: "a", label: "undefined" },
+        { id: "b", label: "Пустой массив" },
+        { id: "c", label: "false" },
+      ],
+    },
+    {
       id: "react-1",
       kind: "short-text",
       topic: "react",
       prompt: "Объясните, чем props компонента отличаются от его состояния.",
+    },
+    {
+      id: "http-1",
+      kind: "short-text",
+      topic: "http",
+      prompt: "Что нужно проверить в ответе fetch перед использованием JSON?",
     },
   ],
 };
