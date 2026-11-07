@@ -4,9 +4,10 @@ type TaskCardProps = {
     task: Task;
     answer: Answer | undefined;
     onAnswerChange: (answer: Answer) => void;
+    onAnswerClear: (taskId: string) => void;
 };
 
-export function TaskCard({ task, answer, onAnswerChange }: TaskCardProps) {
+export function TaskCard({ task, answer, onAnswerChange, onAnswerClear }: TaskCardProps) {
     return (
         <article aria-label="Текущее задание">
             <p>Тема: {task.topic}</p>
@@ -46,6 +47,11 @@ export function TaskCard({ task, answer, onAnswerChange }: TaskCardProps) {
                         rows={5}
                     />
                 </label>
+            )}
+            {answer && (
+                <button type="button" onClick={() => onAnswerClear(task.id)}>
+                    Очистить ответ
+                </button>
             )}
         </article>
     );

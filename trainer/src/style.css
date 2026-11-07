@@ -108,6 +108,13 @@ textarea {
     background: #fff9ef;
 }
 
+.storage-warning {
+    padding: 0.75rem;
+    border: 1px solid #bd751f;
+    border-radius: 8px;
+    background: #fff9ef;
+}
+
 .review-answer {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
