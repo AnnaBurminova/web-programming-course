@@ -6,6 +6,7 @@ type AttemptReviewProps = {
     answers: Answer[];
     submitted: boolean;
     onClear: (taskId: string) => void;
+    disabled?: boolean;
 };
 
 function answerText(task: Task, answer: Answer | undefined): string {
@@ -16,7 +17,7 @@ function answerText(task: Task, answer: Answer | undefined): string {
     return answer?.kind === "short-text" ? answer.text : "Нет ответа";
 }
 
-export function AttemptReview({ tasks, answers, submitted, onClear }: AttemptReviewProps) {
+export function AttemptReview({ tasks, answers, submitted, onClear, disabled = false }: AttemptReviewProps) {
     return (
         <section aria-label="Обзор ответов">
             <h2>Обзор ответов</h2>
@@ -28,7 +29,7 @@ export function AttemptReview({ tasks, answers, submitted, onClear }: AttemptRev
                             <strong>{task.prompt}</strong>
                             <p className="review-answer">{answerText(task, answer)}</p>
                             {!submitted && isAnswered(task, answer) && (
-                                <button type="button" onClick={() => onClear(task.id)}>
+                                <button type="button" disabled={disabled} onClick={() => onClear(task.id)}>
                                     Очистить ответ в обзоре
                                 </button>
                             )}

@@ -5,9 +5,10 @@ type TaskCardProps = {
     answer: Answer | undefined;
     onAnswerChange: (answer: Answer) => void;
     onAnswerClear: (taskId: string) => void;
+    disabled?: boolean;
 };
 
-export function TaskCard({ task, answer, onAnswerChange, onAnswerClear }: TaskCardProps) {
+export function TaskCard({ task, answer, onAnswerChange, onAnswerClear, disabled = false }: TaskCardProps) {
     return (
         <article aria-label="Текущее задание">
             <p>Тема: {task.topic}</p>
@@ -22,6 +23,7 @@ export function TaskCard({ task, answer, onAnswerChange, onAnswerClear }: TaskCa
                         <label className="option" key={option.id}>
                             <input
                                 type="radio"
+                                disabled={disabled}
                                 name={task.id}
                                 checked={answer?.kind === "single-choice" && answer.optionId === option.id}
                                 onChange={() => onAnswerChange({
@@ -38,6 +40,7 @@ export function TaskCard({ task, answer, onAnswerChange, onAnswerClear }: TaskCa
                 <label className="text-answer">
                     Короткий ответ
                     <textarea
+                        disabled={disabled}
                         value={answer?.kind === "short-text" ? answer.text : ""}
                         onChange={(event) => onAnswerChange({
                             taskId: task.id,
@@ -49,7 +52,7 @@ export function TaskCard({ task, answer, onAnswerChange, onAnswerClear }: TaskCa
                 </label>
             )}
             {answer && (
-                <button type="button" onClick={() => onAnswerClear(task.id)}>
+                <button type="button" disabled={disabled} onClick={() => onAnswerClear(task.id)}>
                     Очистить ответ
                 </button>
             )}

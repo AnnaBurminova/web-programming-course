@@ -1,9 +1,9 @@
-import type { Answer } from "./domain";
-import { trainingSet } from "./trainingSet";
+import type { Answer, Task } from "./domain";
 
 export type AttemptStatus = "in-progress" | "submitted";
 
 export type AttemptState = {
+    tasks: Task[];
     answers: Answer[];
     currentIndex: number;
     status: AttemptStatus;
@@ -19,6 +19,7 @@ export type Draft = {
 };
 
 export type AttemptAction =
+    | { type: "setLoaded"; tasks: Task[] }
     | { type: "answerChanged"; answer: Answer }
     | { type: "answerCleared"; taskId: string }
     | { type: "moved"; index: number }
@@ -29,6 +30,7 @@ export type AttemptAction =
     | { type: "submitted" };
 
 export const initialAttemptState: AttemptState = {
+    tasks: [],
     answers: [],
     currentIndex: 0,
     status: "in-progress",
@@ -40,9 +42,12 @@ export function attemptReducer(
     action: AttemptAction
 ): AttemptState {
     switch (action.type) {
+        case "setLoaded":
+            return { ...state, tasks: action.tasks };
+
         case "answerChanged":
             if (state.status === "submitted") return state;
-            if (!trainingSet.tasks.some((task) => task.id === action.answer.taskId && task.kind === action.answer.kind)) return state;
+            if (!state.tasks.some((task) => task.id === action.answer.taskId && task.kind === action.answer.kind)) return state;
             return {
                 ...state,
                 answers: [
@@ -67,15 +72,16 @@ export function attemptReducer(
                 ...state,
                 currentIndex: Math.max(
                     0,
-                    Math.min(action.index, trainingSet.tasks.length - 1)
+                    Math.min(action.index, state.tasks.length - 1)
                 ),
             };
 
         case "restored": {
-            const index = trainingSet.tasks.findIndex(
+            const index = state.tasks.findIndex(
                 (task) => task.id === action.draft.taskId
             );
             return {
+                tasks: state.tasks,
                 answers: action.draft.answers,
                 currentIndex: index >= 0 ? index : 0,
                 status: action.draft.status,
@@ -84,7 +90,7 @@ export function attemptReducer(
         }
 
         case "reset":
-            return initialAttemptState;
+            return { ...initialAttemptState, tasks: state.tasks };
 
         case "finishRequested":
             return state.status === "submitted"
